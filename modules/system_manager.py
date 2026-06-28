@@ -7,7 +7,6 @@ class SystemManager:
     def __init__(self):
 
         self.cooldown = 30
-
         self.last_detection = 0
 
     def can_trigger(self):
@@ -17,7 +16,6 @@ class SystemManager:
         if current - self.last_detection >= self.cooldown:
 
             self.last_detection = current
-
             return True
 
         return False
@@ -38,7 +36,6 @@ class SystemManager:
         """
 
         db.execute(query, (status,))
-
         db.close()
 
     def get_status(self):
@@ -58,3 +55,7 @@ class SystemManager:
         db.close()
 
         return status
+
+    def reset_status(self):
+
+        self.set_status("SAFE")

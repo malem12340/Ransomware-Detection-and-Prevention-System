@@ -302,28 +302,16 @@ gap:15px;
 
 }
 
-/* SAFE */
-
-.safe{
-
-    color:#00ff66;
-
+#systemStatus.safe{
+    color:#00ff66 !important;
 }
 
-/* WARNING */
-
-.warning{
-
-    color:orange;
-
+#systemStatus.warning{
+    color:orange !important;
 }
 
-/* CRITICAL */
-
-.critical{
-
-    color:red;
-
+#systemStatus.critical{
+    color:red !important;
 }
 
 #activityChart{
@@ -332,4 +320,4 @@ gap:15px;
 
     width:100% !important;
 
-}
+}   

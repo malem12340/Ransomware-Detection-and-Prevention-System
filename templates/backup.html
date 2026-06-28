@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Backup History</title>
+
+</head>
+
+<body>
+
+<h1>Backup History</h1>
+
+<table border="1">
+
+<tr>
+
+<th>ID</th>
+
+<th>File Name</th>
+
+<th>Backup Time</th>
+
+<th>Restore</th>
+
+</tr>
+
+{% for file in backups %}
+
+<tr>
+
+<td>{{ file.id }}</td>
+
+<td>{{ file.file_name }}</td>
+
+<td>{{ file.backup_time }}</td>
+
+<td>
+
+<a href="/restore/{{ file.file_name }}">
+
+Restore
+
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</body>
+
+</html>
