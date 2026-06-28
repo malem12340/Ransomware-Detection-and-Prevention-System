@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | Ransomware Detection System</title>
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>RDPS</h2>
+
+            <p>Ransomware Detection & Prevention</p>
+
+        </div>
+
+        <ul>
+
+            <li class="active">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </li>
+
+            <li>
+                <i class="fa-solid fa-folder-open"></i>
+                File Monitoring
+            </li>
+
+            <li>
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                Alerts
+            </li>
+
+            <li>
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                Logs
+            </li>
+
+            <li>
+                <i class="fa-solid fa-hard-drive"></i>
+                Backup
+            </li>
+
+            <li>
+                <i class="fa-solid fa-gear"></i>
+                Settings
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <!-- Main -->
+
+    <main class="main">
+
+        <!-- Header -->
+
+        <header>
+
+            <div>
+
+                <h1>Dashboard</h1>
+
+                <p>Welcome {{ username }}</p>
+
+            </div>
+
+            <div>
+
+                <a href="{{ url_for('auth.logout') }}" class="logout">
+
+                    Logout
+
+                </a>
+
+            </div>
+
+        </header>
+
+        <!-- Dashboard Cards -->
+
+        <section class="cards">
+
+            <div class="card">
+
+                <i class="fa-solid fa-folder-open"></i>
+
+                <h3>Files Monitored</h3>
+
+                <h2>{{ monitored }}</h2>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fa-solid fa-bolt"></i>
+
+                <h3>Rapid Changes</h3>
+
+                <h2>{{ rapid_changes }}</h2>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                <h3>Alerts Generated</h3>
+
+                <h2>{{ alerts }}</h2>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fa-solid fa-database"></i>
+
+                <h3>Backups</h3>
+
+                <h2>{{ backups }}</h2>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <h3>Threat Status</h3>
+
+                <h2 id="systemStatus"
+                    class="{{ system_status|lower }}">
+
+                    {{ system_status }}
+
+                </h2>
+
+        </section>
+
+        <!-- Placeholder -->
+
+        <section class="content">
+
+    <!-- Monitoring -->
+
+    <div class="panel">
+
+        <h2>File Monitoring Overview</h2>
+
+        <canvas id="activityChart"></canvas>
+
+    </div>
+    
+
+    <!-- Recent Logs -->
+
+    <div class="panel">
+
+        <h2>Recent Logs</h2>
+
+        <table class="logs-table">
+
+            <tr>
+                <th>User</th>
+                <th>Action</th>
+                <th>Time</th>
+            </tr>
+
+            {% for log in recent_logs %}
+
+            <tr>
+
+                <td>{{ log.username }}</td>
+                <td>{{ log.action }}</td>
+                <td>{{ log.log_time }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+</section>
+
+<section class="content" style="margin-top:20px;">
+
+    <div class="panel">
+
+        <h2>Recent Alerts</h2>
+
+        <table class="logs-table">
+
+            <tr>
+
+                <th>Type</th>
+
+                <th>Severity</th>
+
+                <th>Description</th>
+
+            </tr>
+
+            {% for alert in recent_alerts %}
+
+            <tr>
+
+                <td>{{ alert.alert_type }}</td>
+
+                <td>{{ alert.severity }}</td>
+
+                <td>{{ alert.description }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+</section>
+
+    </main>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+</body>
+
+</html>
