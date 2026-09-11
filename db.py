@@ -8,13 +8,15 @@ class Database:
 
         self.connection = mysql.connector.connect(
             host=Config.DB_HOST,
-            port=Config.DB_PORT,
             user=Config.DB_USER,
             password=Config.DB_PASSWORD,
-            database=Config.DB_NAME
+            database=Config.DB_NAME,
+            port=Config.DB_PORT
         )
 
-        self.cursor = self.connection.cursor(dictionary=True)
+        self.cursor = self.connection.cursor(
+            dictionary=True
+        )
 
     def execute(self, query, values=None):
 
@@ -35,5 +37,6 @@ class Database:
         return self.cursor.fetchall()
 
     def close(self):
+
         self.cursor.close()
         self.connection.close()
