@@ -10,14 +10,18 @@ from modules.backup import BackupManager
 from modules.system_manager import SystemManager
 from modules.extension_detector import ExtensionDetector
 from modules.event_filter import EventFilter
+from modules.email_alert import EmailAlert
 
 import os
-import time
 
 
+# ---------------------------------------
+# Initialize Components
+# ---------------------------------------
 
 detector = DetectionEngine()
 alert = AlertManager()
+email_alert = EmailAlert()
 logger = Logger()
 backup = BackupManager()
 system = SystemManager()
@@ -25,10 +29,14 @@ extension_detector = ExtensionDetector()
 event_filter = EventFilter()
 
 
+# ---------------------------------------
+# Monitoring Handler
+# ---------------------------------------
+
 class MonitorHandler(FileSystemEventHandler):
 
     def save_event(self, event_type, path):
-        
+
         if not event_filter.allow_event(event_type, path):
             return
 
@@ -40,14 +48,14 @@ class MonitorHandler(FileSystemEventHandler):
 
         query = """
         INSERT INTO file_events
-        (event_type, file_name, file_path)
+        (event_type, file_path, status)
         VALUES (%s, %s, %s)
         """
 
         values = (
             event_type,
-            os.path.basename(path),
-            path
+            path,
+            "Detected"
         )
 
         db.execute(query, values)
@@ -62,15 +70,29 @@ class MonitorHandler(FileSystemEventHandler):
 
             system.set_status("CRITICAL")
 
+            description = (
+                f"Encrypted file detected: "
+                f"{os.path.basename(path)}"
+            )
+
+            # Save alert
             alert.create_alert(
                 "Suspicious Extension",
-                f"Encrypted file detected: {os.path.basename(path)}",
+                description,
                 "Critical"
             )
 
+            # Save log
             logger.save_log(
                 "SYSTEM",
                 "Suspicious extension detected"
+            )
+
+            # Send email
+            email_alert.send_alert(
+                "Suspicious Extension",
+                description,
+                "Critical"
             )
 
         # ---------------------------------------
@@ -85,18 +107,39 @@ class MonitorHandler(FileSystemEventHandler):
 
                 system.set_status("CRITICAL")
 
+                description = (
+                    "Multiple files changed within a short "
+                    "period. Possible ransomware activity detected."
+                )
+
+                # Save alert
                 alert.create_alert(
                     "Rapid File Modification",
-                    "Multiple files changed within a short period. Possible ransomware activity detected.",
+                    description,
                     "Critical"
                 )
 
+                # Save log
                 logger.save_log(
                     "SYSTEM",
                     "Possible ransomware detected"
                 )
 
-                backup.backup_all_files("monitored_folder")
+                # Send email
+                email_alert.send_alert(
+                    "Rapid File Modification",
+                    description,
+                    "Critical"
+                )
+
+                # Create backup
+                backup.backup_all_files(
+                    "monitored_folder"
+                )
+
+        # ---------------------------------------
+        # Close Database
+        # ---------------------------------------
 
         db.close()
 
@@ -109,7 +152,11 @@ class MonitorHandler(FileSystemEventHandler):
     def on_created(self, event):
 
         if not event.is_directory:
-            self.save_event("Created", event.src_path)
+
+            self.save_event(
+                "Created",
+                event.src_path
+            )
 
     # ---------------------------------------
     # File Modified
@@ -118,7 +165,11 @@ class MonitorHandler(FileSystemEventHandler):
     def on_modified(self, event):
 
         if not event.is_directory:
-            self.save_event("Modified", event.src_path)
+
+            self.save_event(
+                "Modified",
+                event.src_path
+            )
 
     # ---------------------------------------
     # File Deleted
@@ -127,7 +178,11 @@ class MonitorHandler(FileSystemEventHandler):
     def on_deleted(self, event):
 
         if not event.is_directory:
-            self.save_event("Deleted", event.src_path)
+
+            self.save_event(
+                "Deleted",
+                event.src_path
+            )
 
     # ---------------------------------------
     # File Renamed
@@ -136,8 +191,16 @@ class MonitorHandler(FileSystemEventHandler):
     def on_moved(self, event):
 
         if not event.is_directory:
-            self.save_event("Renamed", event.dest_path)
 
+            self.save_event(
+                "Renamed",
+                event.dest_path
+            )
+
+
+# ---------------------------------------
+# Start Monitoring
+# ---------------------------------------
 
 def start_monitoring():
 

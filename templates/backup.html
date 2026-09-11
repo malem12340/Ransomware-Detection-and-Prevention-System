@@ -1,56 +1,268 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Backup History</title>
+    <title>Backup History - Ransomware Detection System</title>
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
 </head>
 
 <body>
 
-<h1>Backup History</h1>
+<div class="container">
 
-<table border="1">
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
 
-<tr>
+        <div class="logo">
+            <h2>RDPS</h2>
+            <p>Ransomware Detection<br>and Prevention System</p>
+        </div>
 
-<th>ID</th>
+        <ul class="sidebar-menu">
 
-<th>File Name</th>
+            <li>
+                <a href="{{ url_for('dashboard') }}">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
 
-<th>Backup Time</th>
+            <li>
+                <a href="{{ url_for('file_monitoring') }}">
+                    <i class="fa-solid fa-file-shield"></i>
+                    <span>File Monitoring</span>
+                </a>
+            </li>
 
-<th>Restore</th>
+            <li>
+                <a href="{{ url_for('alerts') }}">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Alerts</span>
+                </a>
+            </li>
 
-</tr>
+            <li>
+                <a href="{{ url_for('logs') }}">
+                    <i class="fa-solid fa-list"></i>
+                    <span>Logs</span>
+                </a>
+            </li>
 
-{% for file in backups %}
+            <li class="active">
+                <a href="{{ url_for('backup') }}">
+                    <i class="fa-solid fa-database"></i>
+                    <span>Backup</span>
+                </a>
+            </li>
 
-<tr>
+            <li>
+                <a href="{{ url_for('settings') }}">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
 
-<td>{{ file.id }}</td>
+        </ul>
 
-<td>{{ file.file_name }}</td>
+        <div class="sidebar-footer">
 
-<td>{{ file.backup_time }}</td>
+            <a href="{{ url_for('auth.logout') }}" class="sidebar-logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
 
-<td>
+        </div>
 
-<a href="/restore/{{ file.file_name }}">
+    </aside>
 
-Restore
 
-</a>
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="main">
 
-</td>
+        <!-- Header -->
+        <div class="top-header">
 
-</tr>
+            <div>
+                <h1>Backup History</h1>
+                <p>View and restore files protected by the system.</p>
+            </div>
 
-{% endfor %}
+            <div class="header-status">
+                <i class="fa-solid fa-shield-halved"></i>
+                Backup System
+            </div>
 
-</table>
+        </div>
+
+
+        <!-- Backup Information Cards -->
+        <div class="cards">
+
+            <div class="card">
+
+                <div class="card-icon">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+
+                <div class="card-info">
+                    <h3>Total Backups</h3>
+                    <h2>{{ backups|length }}</h2>
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+
+                <div class="card-info">
+                    <h3>Protection</h3>
+                    <h2 style="font-size:20px;">ACTIVE</h2>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Backup Table -->
+        <div class="single-content">
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+                        <h2>Protected Files</h2>
+                        <p>Recently created file backups</p>
+                    </div>
+
+                    <i class="fa-solid fa-box-archive"></i>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table class="logs-table">
+
+                        <thead>
+
+                            <tr>
+                                <th>ID</th>
+                                <th>File Name</th>
+                                <th>Original Path</th>
+                                <th>Backup Path</th>
+                                <th>Backup Time</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                        {% if backups %}
+
+                            {% for file in backups %}
+
+                            <tr>
+
+                                <td>
+                                    {{ file.backup_id if file.backup_id is defined else file.id }}
+                                </td>
+
+                                <td>
+
+                                    <div class="file-path">
+
+                                        <i class="fa-solid fa-file"></i>
+
+                                        <span>
+                                            {{ file.file_name }}
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+                                    <div class="backup-path">
+                                        {{ file.original_path }}
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="backup-path">
+                                        {{ file.backup_path }}
+                                    </div>
+                                </td>
+
+                                <td>
+                                    {{ file.backup_time }}
+                                </td>
+
+                                <td>
+
+                                    <a href="/restore/{{ file.file_name }}"
+                                       class="btn btn-success">
+
+                                        <i class="fa-solid fa-rotate-left"></i>
+
+                                        Restore
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <tr>
+
+                                <td colspan="6" class="no-data">
+
+                                    <i class="fa-solid fa-database"></i>
+
+                                    <br>
+
+                                    No backup files found.
+
+                                </td>
+
+                            </tr>
+
+                        {% endif %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
 
 </body>
-
 </html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs | RDPS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>RDPS</h2>
+            <p>Ransomware Detection & Prevention</p>
+        </div>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="{{ url_for('dashboard') }}">
+                    <i class="fa-solid fa-house"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-folder-open"></i>
+                    File Monitoring
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('alerts') }}">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Alerts
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="{{ url_for('logs') }}">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    Logs
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('backup') }}">
+                    <i class="fa-solid fa-hard-drive"></i>
+                    Backup
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('settings') }}">
+                    <i class="fa-solid fa-gear"></i>
+                    Settings
+                </a>
+            </li>
+
+        </ul>
+
+        <div class="sidebar-footer">
+            <a href="{{ url_for('auth.logout') }}" class="sidebar-logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </a>
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header>
+            <div>
+                <h1>System Logs</h1>
+                <p>Recent system activity</p>
+            </div>
+        </header>
+
+        <div class="panel">
+
+            <h2>Recent Logs</h2>
+
+            <table class="logs-table">
+
+                <tr>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Time</th>
+                </tr>
+
+                {% for log in logs %}
+
+                <tr>
+                    <td>{{ log.username }}</td>
+                    <td>{{ log.action }}</td>
+                    <td>{{ log.log_time }}</td>
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="3" style="text-align:center;">
+                        No logs found
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

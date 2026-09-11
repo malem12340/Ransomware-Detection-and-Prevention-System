@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Settings | RDPS</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>RDPS</h2>
+            <p>Ransomware Detection & Prevention</p>
+        </div>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="{{ url_for('dashboard') }}">
+                    <i class="fa-solid fa-house"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-folder-open"></i>
+                    File Monitoring
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('alerts') }}">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Alerts
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('logs') }}">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    Logs
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('backup') }}">
+                    <i class="fa-solid fa-hard-drive"></i>
+                    Backup
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="{{ url_for('settings') }}">
+                    <i class="fa-solid fa-gear"></i>
+                    Settings
+                </a>
+            </li>
+
+        </ul>
+
+        <div class="sidebar-footer">
+            <a href="{{ url_for('auth.logout') }}" class="sidebar-logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </a>
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header>
+            <div>
+                <h1>Settings</h1>
+                <p>System configuration</p>
+            </div>
+        </header>
+
+        <div class="panel">
+
+            <h2>Monitoring Settings</h2>
+
+            <div style="margin-top:20px;">
+
+                <label>
+                    <strong>Monitoring Status</strong>
+                </label>
+
+                <p style="margin-top:10px;">
+                    Ransomware file monitoring is currently active.
+                </p>
+
+            </div>
+
+            <hr style="margin:25px 0; border-color:#374151;">
+
+            <div>
+
+                <label>
+                    <strong>Detection System</strong>
+                </label>
+
+                <p style="margin-top:10px;">
+                    Rapid file modification detection is enabled.
+                </p>
+
+            </div>
+
+            <hr style="margin:25px 0; border-color:#374151;">
+
+            <div>
+
+                <label>
+                    <strong>Backup System</strong>
+                </label>
+
+                <p style="margin-top:10px;">
+                    Automatic backup system is enabled.
+                </p>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

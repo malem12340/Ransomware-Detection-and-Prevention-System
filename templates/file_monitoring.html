@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>File Monitoring | RDPS</title>
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- ==========================================
+         SIDEBAR
+    =========================================== -->
+
+    <aside class="sidebar">
+
+
+        <!-- Logo -->
+
+        <div class="logo">
+
+            <h2>RDPS</h2>
+
+            <p>
+                Ransomware Detection<br>
+                & Prevention
+            </p>
+
+        </div>
+
+
+        <!-- Navigation -->
+
+        <ul class="sidebar-menu">
+
+
+            <!-- Dashboard -->
+
+            <li>
+
+                <a href="{{ url_for('dashboard') }}">
+
+                    <i class="fa-solid fa-house"></i>
+
+                    <span>Dashboard</span>
+
+                </a>
+
+            </li>
+
+
+            <!-- File Monitoring -->
+
+            <li class="active">
+
+                <a href="{{ url_for('file_monitoring') }}">
+
+                    <i class="fa-solid fa-folder-open"></i>
+
+                    <span>File Monitoring</span>
+
+                </a>
+
+            </li>
+
+
+            <!-- Alerts -->
+
+            <li>
+
+                <a href="{{ url_for('alerts') }}">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <span>Alerts</span>
+
+                </a>
+
+            </li>
+
+
+            <!-- Logs -->
+
+            <li>
+
+                <a href="{{ url_for('logs') }}">
+
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    <span>Logs</span>
+
+                </a>
+
+            </li>
+
+
+            <!-- Backup -->
+
+            <li>
+
+                <a href="{{ url_for('backup') }}">
+
+                    <i class="fa-solid fa-hard-drive"></i>
+
+                    <span>Backup</span>
+
+                </a>
+
+            </li>
+
+
+            <!-- Settings -->
+
+            <li>
+
+                <a href="{{ url_for('settings') }}">
+
+                    <i class="fa-solid fa-gear"></i>
+
+                    <span>Settings</span>
+
+                </a>
+
+            </li>
+
+
+        </ul>
+
+
+        <!-- Logout -->
+
+        <div class="sidebar-footer">
+
+            <a href="{{ url_for('auth.logout') }}"
+               class="sidebar-logout">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>Logout</span>
+
+            </a>
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- ==========================================
+         MAIN CONTENT
+    =========================================== -->
+
+    <main class="main">
+
+
+        <!-- Header -->
+
+        <header class="top-header">
+
+            <div>
+
+                <h1>File Monitoring</h1>
+
+                <p>
+                    Real-time file activity monitoring
+                </p>
+
+            </div>
+
+
+            <div class="header-status">
+
+                <i class="fa-solid fa-eye"></i>
+
+                <span>Monitoring Active</span>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ==========================================
+             MONITORING INFORMATION
+        =========================================== -->
+
+        <section class="cards">
+
+
+            <!-- Total Events -->
+
+            <div class="card">
+
+                <div class="card-icon">
+
+                    <i class="fa-solid fa-list"></i>
+
+                </div>
+
+                <div class="card-info">
+
+                    <h3>Total Events</h3>
+
+                    <h2>{{ file_events|length }}</h2>
+
+                </div>
+
+            </div>
+
+
+            <!-- Created -->
+
+            <div class="card">
+
+                <div class="card-icon">
+
+                    <i class="fa-solid fa-file-circle-plus"></i>
+
+                </div>
+
+                <div class="card-info">
+
+                    <h3>Created</h3>
+
+                    <h2>
+
+                        {{
+                            file_events
+                            |selectattr("event_type", "equalto", "Created")
+                            |list
+                            |length
+                        }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <!-- Modified -->
+
+            <div class="card">
+
+                <div class="card-icon">
+
+                    <i class="fa-solid fa-file-pen"></i>
+
+                </div>
+
+                <div class="card-info">
+
+                    <h3>Modified</h3>
+
+                    <h2>
+
+                        {{
+                            file_events
+                            |selectattr("event_type", "equalto", "Modified")
+                            |list
+                            |length
+                        }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <!-- Deleted -->
+
+            <div class="card">
+
+                <div class="card-icon warning-icon">
+
+                    <i class="fa-solid fa-file-circle-xmark"></i>
+
+                </div>
+
+                <div class="card-info">
+
+                    <h3>Deleted</h3>
+
+                    <h2>
+
+                        {{
+                            file_events
+                            |selectattr("event_type", "equalto", "Deleted")
+                            |list
+                            |length
+                        }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <!-- Renamed -->
+
+            <div class="card">
+
+                <div class="card-icon">
+
+                    <i class="fa-solid fa-file-signature"></i>
+
+                </div>
+
+                <div class="card-info">
+
+                    <h3>Renamed</h3>
+
+                    <h2>
+
+                        {{
+                            file_events
+                            |selectattr("event_type", "equalto", "Renamed")
+                            |list
+                            |length
+                        }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ==========================================
+             FILE EVENTS TABLE
+        =========================================== -->
+
+        <section class="single-content">
+
+
+            <div class="panel">
+
+
+                <!-- Panel Header -->
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>File Activity</h2>
+
+                        <p>
+                            Latest file system events detected
+                        </p>
+
+                    </div>
+
+                    <i class="fa-solid fa-folder-tree"></i>
+
+                </div>
+
+
+
+                <!-- Table -->
+
+                <div class="table-container">
+
+                    <table class="logs-table">
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>File Path</th>
+
+                                <th>Event Type</th>
+
+                                <th>Status</th>
+
+                                <th>Event Time</th>
+
+                            </tr>
+
+                        </thead>
+
+
+
+                        <tbody>
+
+
+                            {% for event in file_events %}
+
+                            <tr>
+
+
+                                <!-- File Path -->
+
+                                <td>
+
+                                    <div class="file-path">
+
+                                        <i class="fa-solid fa-file"></i>
+
+                                        {{ event.file_path }}
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- Event Type -->
+
+                                <td>
+
+                                    {% if event.event_type == "Created" %}
+
+                                        <span class="event created">
+                                            <i class="fa-solid fa-plus"></i>
+                                            Created
+                                        </span>
+
+                                    {% elif event.event_type == "Modified" %}
+
+                                        <span class="event modified">
+                                            <i class="fa-solid fa-pen"></i>
+                                            Modified
+                                        </span>
+
+                                    {% elif event.event_type == "Deleted" %}
+
+                                        <span class="event deleted">
+                                            <i class="fa-solid fa-trash"></i>
+                                            Deleted
+                                        </span>
+
+                                    {% elif event.event_type == "Renamed" %}
+
+                                        <span class="event renamed">
+                                            <i class="fa-solid fa-right-left"></i>
+                                            Renamed
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="event">
+                                            {{ event.event_type }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Status -->
+
+                                <td>
+
+                                    {% if event.status == "Detected" %}
+
+                                        <span class="status detected">
+
+                                            <i class="fa-solid fa-circle-check"></i>
+
+                                            Detected
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="status">
+
+                                            {{ event.status }}
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Time -->
+
+                                <td>
+
+                                    {{ event.event_time }}
+
+                                </td>
+
+
+                            </tr>
+
+
+                            {% else %}
+
+
+                            <tr>
+
+                                <td colspan="4"
+                                    class="no-data">
+
+                                    <i class="fa-solid fa-folder-open"></i>
+
+                                    <br><br>
+
+                                    No file events detected yet.
+
+                                </td>
+
+                            </tr>
+
+
+                            {% endfor %}
+
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+</body>
+
+</html>
