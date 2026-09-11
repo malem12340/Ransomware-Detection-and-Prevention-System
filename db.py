@@ -8,6 +8,7 @@ class Database:
 
         self.connection = mysql.connector.connect(
             host=Config.DB_HOST,
+            port=Config.DB_PORT,
             user=Config.DB_USER,
             password=Config.DB_PASSWORD,
             database=Config.DB_NAME
@@ -22,8 +23,9 @@ class Database:
         else:
             self.cursor.execute(query)
 
-        # Commit ONLY for INSERT, UPDATE, DELETE
-        if query.strip().upper().startswith(("INSERT", "UPDATE", "DELETE")):
+        if query.strip().upper().startswith(
+            ("INSERT", "UPDATE", "DELETE")
+        ):
             self.connection.commit()
 
     def fetchone(self):
