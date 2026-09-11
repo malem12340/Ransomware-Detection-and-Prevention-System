@@ -17,7 +17,6 @@ class Dashboard:
         """)
 
         result = db.fetchone()
-
         monitored = result["total"] if result else 0
 
         db.cursor.fetchall()
@@ -34,7 +33,6 @@ class Dashboard:
         """)
 
         result = db.fetchone()
-
         rapid_changes = result["total"] if result else 0
 
         db.cursor.fetchall()
@@ -50,7 +48,6 @@ class Dashboard:
         """)
 
         result = db.fetchone()
-
         alerts = result["total"] if result else 0
 
         db.cursor.fetchall()
@@ -66,7 +63,6 @@ class Dashboard:
         """)
 
         result = db.fetchone()
-
         logs = result["total"] if result else 0
 
         db.cursor.fetchall()
@@ -82,7 +78,6 @@ class Dashboard:
         """)
 
         result = db.fetchone()
-
         backups = result["total"] if result else 0
 
         db.cursor.fetchall()
@@ -121,6 +116,25 @@ class Dashboard:
         """)
 
         recent_alerts = db.fetchall()
+
+
+        # ==========================================
+        # RECENT FILE EVENTS
+        # ==========================================
+
+        db.execute("""
+            SELECT
+                id,
+                file_path,
+                event_type,
+                event_time,
+                status
+            FROM file_events
+            ORDER BY id DESC
+            LIMIT 10
+        """)
+
+        recent_file_events = db.fetchall()
 
 
         # ==========================================
@@ -177,6 +191,7 @@ class Dashboard:
             "backups": backups,
             "recent_logs": recent_logs,
             "recent_alerts": recent_alerts,
+            "recent_file_events": recent_file_events,
             "system_status": system_status,
             "chart_data": chart_data
         }

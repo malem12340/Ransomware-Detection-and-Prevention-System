@@ -1,4 +1,8 @@
 import os
+from dotenv import load_dotenv
+
+# Load variables from .env
+load_dotenv()
 
 
 class Config:
@@ -8,8 +12,27 @@ class Config:
         "Ransomware_Project_2026"
     )
 
-    DB_HOST = os.environ.get("DBHOST", "localhost")
-    DB_PORT = int(os.environ.get("DBPORT", "3306"))
-    DB_USER = os.environ.get("DBUSER", "root")
-    DB_PASSWORD = os.environ.get("DBPASSWORD", "")
-    DB_NAME = os.environ.get("DBNAME", "ransomware2_db")
+    DB_HOST = os.environ.get(
+        "DBHOST",
+        "localhost"
+    )
+
+    DB_PORT = int(os.environ.get(
+        "DBPORT",
+        "3306"
+    ))
+
+    DB_USER = os.environ.get(
+        "DBUSER",
+        "root"
+    )
+
+    DB_PASSWORD = os.environ.get(
+        "DBPASSWORD",
+        ""
+    )
+
+    DB_NAME = os.environ.get(
+        "DBNAME",
+        "ransomware2_db"
+    )

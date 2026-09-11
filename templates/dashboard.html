@@ -1,580 +1,629 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Dashboard | RDPS</title>
+```
+<title>Dashboard | RDPS</title>
 
-    <!-- Dashboard CSS -->
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/dashboard.css') }}">
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/dashboard.css') }}">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+```
+
 </head>
-
 
 <body>
 
 <div class="container">
 
+```
+<!-- ==========================================
+     SIDEBAR
+=========================================== -->
 
-    <!-- ==========================================
-         SIDEBAR
-    =========================================== -->
+<aside class="sidebar">
 
-    <aside class="sidebar">
+    <div class="logo">
 
-        <!-- Logo -->
-        <div class="logo">
+        <h2>RDPS</h2>
 
-            <h2>RDPS</h2>
+        <p>
+            Ransomware Detection<br>
+            & Prevention
+        </p>
+
+    </div>
+
+
+    <ul class="sidebar-menu">
+
+        <li class="active">
+            <a href="{{ url_for('dashboard') }}">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+
+        <li>
+            <a href="{{ url_for('file_monitoring') }}">
+                <i class="fa-solid fa-folder-open"></i>
+                <span>File Monitoring</span>
+            </a>
+        </li>
+
+
+        <li>
+            <a href="{{ url_for('alerts') }}">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Alerts</span>
+            </a>
+        </li>
+
+
+        <li>
+            <a href="{{ url_for('logs') }}">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Logs</span>
+            </a>
+        </li>
+
+
+        <li>
+            <a href="{{ url_for('backup') }}">
+                <i class="fa-solid fa-hard-drive"></i>
+                <span>Backup</span>
+            </a>
+        </li>
+
+
+        <li>
+            <a href="{{ url_for('settings') }}">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+
+    </ul>
+
+
+    <div class="sidebar-footer">
+
+        <a href="{{ url_for('auth.logout') }}"
+           class="sidebar-logout">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            <span>Logout</span>
+
+        </a>
+
+    </div>
+
+</aside>
+
+
+
+<!-- ==========================================
+     MAIN CONTENT
+=========================================== -->
+
+<main class="main">
+
+
+    <!-- HEADER -->
+
+    <header class="top-header">
+
+        <div>
+
+            <h1>Dashboard</h1>
 
             <p>
-                Ransomware Detection<br>
-                & Prevention
+                Welcome, <strong>{{ username }}</strong>
             </p>
 
         </div>
 
 
-        <!-- Navigation -->
-        <ul class="sidebar-menu">
+        <div class="header-status">
 
+            <i class="fa-solid fa-shield-halved"></i>
 
-            <!-- Dashboard -->
-            <li class="active">
-
-                <a href="{{ url_for('dashboard') }}">
-
-                    <i class="fa-solid fa-house"></i>
-
-                    <span>Dashboard</span>
-
-                </a>
-
-            </li>
-
-
-            <!-- File Monitoring -->
-            <li>
-
-                <a href="{{ url_for('file_monitoring') }}">
-
-                    <i class="fa-solid fa-folder-open"></i>
-
-                    <span>File Monitoring</span>
-
-                </a>
-
-            </li>
-
-
-            <!-- Alerts -->
-            <li>
-
-                <a href="{{ url_for('alerts') }}">
-
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-
-                    <span>Alerts</span>
-
-                </a>
-
-            </li>
-
-
-            <!-- Logs -->
-            <li>
-
-                <a href="{{ url_for('logs') }}">
-
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-
-                    <span>Logs</span>
-
-                </a>
-
-            </li>
-
-
-            <!-- Backup -->
-            <li>
-
-                <a href="{{ url_for('backup') }}">
-
-                    <i class="fa-solid fa-hard-drive"></i>
-
-                    <span>Backup</span>
-
-                </a>
-
-            </li>
-
-
-            <!-- Settings -->
-            <li>
-
-                <a href="{{ url_for('settings') }}">
-
-                    <i class="fa-solid fa-gear"></i>
-
-                    <span>Settings</span>
-
-                </a>
-
-            </li>
-
-        </ul>
-
-
-        <!-- Logout -->
-        <div class="sidebar-footer">
-
-            <a href="{{ url_for('auth.logout') }}"
-               class="sidebar-logout">
-
-                <i class="fa-solid fa-right-from-bracket"></i>
-
-                <span>Logout</span>
-
-            </a>
+            <span>RDPS Active</span>
 
         </div>
 
-    </aside>
+    </header>
 
 
 
     <!-- ==========================================
-         MAIN CONTENT
+         DASHBOARD CARDS
     =========================================== -->
 
-    <main class="main">
+    <section class="cards">
 
 
-        <!-- Header -->
-        <header class="top-header">
+        <div class="card">
+
+            <div class="card-icon">
+                <i class="fa-solid fa-folder-open"></i>
+            </div>
+
+            <div class="card-info">
+
+                <h3>Files Monitored</h3>
+
+                <h2>{{ monitored }}</h2>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                <i class="fa-solid fa-bolt"></i>
+            </div>
+
+            <div class="card-info">
+
+                <h3>Rapid Changes</h3>
+
+                <h2>{{ rapid_changes }}</h2>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="card">
+
+            <div class="card-icon warning-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <div class="card-info">
+
+                <h3>Alerts Generated</h3>
+
+                <h2>{{ alerts }}</h2>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                <i class="fa-solid fa-database"></i>
+            </div>
+
+            <div class="card-info">
+
+                <h3>Backups</h3>
+
+                <h2>{{ backups }}</h2>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+
+            <div class="card-info">
+
+                <h3>Threat Status</h3>
+
+                <h2 id="systemStatus"
+                    class="{{ system_status|lower }}">
+
+                    {{ system_status }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ==========================================
+         ACTIVITY + LOGS
+    =========================================== -->
+
+    <section class="content">
+
+
+        <!-- ACTIVITY CHART -->
+
+        <div class="panel chart-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>File Monitoring Overview</h2>
+
+                    <p>
+                        File activity detected by the monitoring system
+                    </p>
+
+                </div>
+
+                <i class="fa-solid fa-chart-line"></i>
+
+            </div>
+
+
+            <div class="chart-container">
+
+                <canvas id="activityChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- RECENT LOGS -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>Recent Logs</h2>
+
+                    <p>Latest system activities</p>
+
+                </div>
+
+                <i class="fa-solid fa-clock-rotate-left"></i>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table class="logs-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Time</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for log in recent_logs %}
+
+                        <tr>
+
+                            <td>{{ log.username }}</td>
+
+                            <td>{{ log.action }}</td>
+
+                            <td>{{ log.log_time }}</td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+
+                            <td colspan="3"
+                                class="no-data">
+
+                                No logs available
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==========================================
+         RECENT ALERTS
+    =========================================== -->
+
+    <section class="single-content">
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>Recent Alerts</h2>
+
+                    <p>
+                        Latest security alerts detected
+                    </p>
+
+                </div>
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table class="logs-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Alert Type</th>
+                            <th>Severity</th>
+                            <th>Description</th>
+                            <th>Time</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for alert in recent_alerts %}
+
+                        <tr>
+
+                            <td>
+                                {{ alert.alert_type }}
+                            </td>
+
+                            <td>
+
+                                <span class="severity
+                                    {{ alert.severity|lower }}">
+
+                                    {{ alert.severity }}
+
+                                </span>
+
+                            </td>
+
+                            <td>
+                                {{ alert.description }}
+                            </td>
+
+                            <td>
+                                {{ alert.alert_time }}
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+
+                            <td colspan="4"
+                                class="no-data">
+
+                                No alerts available
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==========================================
+         RECENT FILE EVENTS
+    =========================================== -->
+
+    <section class="single-content">
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>Recent File Events</h2>
+
+                    <p>
+                        Latest file activity detected by RDPS
+                    </p>
+
+                </div>
+
+                <i class="fa-solid fa-file-circle-exclamation"></i>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table class="logs-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+                            <th>File Path</th>
+                            <th>Event Type</th>
+                            <th>Event Time</th>
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for event in recent_file_events %}
+
+                        <tr>
+
+                            <td>
+                                {{ event.id }}
+                            </td>
+
+                            <td>
+                                {{ event.file_path }}
+                            </td>
+
+                            <td>
+                                {{ event.event_type }}
+                            </td>
+
+                            <td>
+                                {{ event.event_time }}
+                            </td>
+
+                            <td>
+
+                                <span class="severity
+                                    {{ event.status|lower }}">
+
+                                    {{ event.status }}
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+
+                            <td colspan="5"
+                                class="no-data">
+
+                                No file events detected
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==========================================
+         SYSTEM INFORMATION
+    =========================================== -->
+
+    <section class="system-info">
+
+
+        <div class="info-box">
+
+            <i class="fa-solid fa-shield-halved"></i>
 
             <div>
 
-                <h1>Dashboard</h1>
+                <h3>Protection Status</h3>
 
                 <p>
-                    Welcome, <strong>{{ username }}</strong>
+                    Ransomware detection and file monitoring
+                    system is running.
                 </p>
 
             </div>
 
-            <div class="header-status">
-
-                <i class="fa-solid fa-shield-halved"></i>
-
-                <span>RDPS Active</span>
-
-            </div>
-
-        </header>
+        </div>
 
 
 
-        <!-- ==========================================
-             DASHBOARD CARDS
-        =========================================== -->
+        <div class="info-box">
 
-        <section class="cards">
+            <i class="fa-solid fa-eye"></i>
 
+            <div>
 
-            <!-- Files Monitored -->
-            <div class="card">
+                <h3>Real-Time Monitoring</h3>
 
-                <div class="card-icon">
-                    <i class="fa-solid fa-folder-open"></i>
-                </div>
-
-                <div class="card-info">
-
-                    <h3>Files Monitored</h3>
-
-                    <h2>{{ monitored }}</h2>
-
-                </div>
+                <p>
+                    The monitored folder is being watched
+                    for suspicious file activity.
+                </p>
 
             </div>
 
+        </div>
 
 
-            <!-- Rapid Changes -->
-            <div class="card">
+    </section>
 
-                <div class="card-icon">
-                    <i class="fa-solid fa-bolt"></i>
-                </div>
 
-                <div class="card-info">
-
-                    <h3>Rapid Changes</h3>
-
-                    <h2>{{ rapid_changes }}</h2>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- Alerts -->
-            <div class="card">
-
-                <div class="card-icon warning-icon">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
-
-                <div class="card-info">
-
-                    <h3>Alerts Generated</h3>
-
-                    <h2>{{ alerts }}</h2>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- Backups -->
-            <div class="card">
-
-                <div class="card-icon">
-                    <i class="fa-solid fa-database"></i>
-                </div>
-
-                <div class="card-info">
-
-                    <h3>Backups</h3>
-
-                    <h2>{{ backups }}</h2>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- Threat Status -->
-            <div class="card">
-
-                <div class="card-icon">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-
-                <div class="card-info">
-
-                    <h3>Threat Status</h3>
-
-                    <h2 id="systemStatus"
-                        class="{{ system_status|lower }}">
-
-                        {{ system_status }}
-
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- ==========================================
-             MAIN CONTENT GRID
-        =========================================== -->
-
-        <section class="content">
-
-
-            <!-- ======================================
-                 ACTIVITY CHART
-            ======================================= -->
-
-            <div class="panel chart-panel">
-
-                <div class="panel-header">
-
-                    <div>
-
-                        <h2>File Monitoring Overview</h2>
-
-                        <p>
-                            File activity detected by the monitoring system
-                        </p>
-
-                    </div>
-
-                    <i class="fa-solid fa-chart-line"></i>
-
-                </div>
-
-                <div class="chart-container">
-
-                    <canvas id="activityChart"></canvas>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- ======================================
-                 RECENT LOGS
-            ======================================= -->
-
-            <div class="panel">
-
-                <div class="panel-header">
-
-                    <div>
-
-                        <h2>Recent Logs</h2>
-
-                        <p>Latest system activities</p>
-
-                    </div>
-
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-
-                </div>
-
-
-                <div class="table-container">
-
-                    <table class="logs-table">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>User</th>
-
-                                <th>Action</th>
-
-                                <th>Time</th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody>
-
-                            {% for log in recent_logs %}
-
-                            <tr>
-
-                                <td>
-                                    {{ log.username }}
-                                </td>
-
-                                <td>
-                                    {{ log.action }}
-                                </td>
-
-                                <td>
-                                    {{ log.log_time }}
-                                </td>
-
-                            </tr>
-
-                            {% else %}
-
-                            <tr>
-
-                                <td colspan="3"
-                                    class="no-data">
-
-                                    No logs available
-
-                                </td>
-
-                            </tr>
-
-                            {% endfor %}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ==========================================
-             RECENT ALERTS
-        =========================================== -->
-
-        <section class="single-content">
-
-            <div class="panel">
-
-
-                <div class="panel-header">
-
-                    <div>
-
-                        <h2>Recent Alerts</h2>
-
-                        <p>
-                            Latest security alerts detected
-                        </p>
-
-                    </div>
-
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-
-                </div>
-
-
-
-                <div class="table-container">
-
-                    <table class="logs-table">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>Alert Type</th>
-
-                                <th>Severity</th>
-
-                                <th>Description</th>
-
-                                <th>Time</th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody>
-
-                            {% for alert in recent_alerts %}
-
-                            <tr>
-
-                                <td>
-                                    {{ alert.alert_type }}
-                                </td>
-
-                                <td>
-
-                                    <span class="severity
-                                        {{ alert.severity|lower }}">
-
-                                        {{ alert.severity }}
-
-                                    </span>
-
-                                </td>
-
-                                <td>
-                                    {{ alert.description }}
-                                </td>
-
-                                <td>
-                                    {{ alert.alert_time }}
-                                </td>
-
-                            </tr>
-
-                            {% else %}
-
-                            <tr>
-
-                                <td colspan="4"
-                                    class="no-data">
-
-                                    No alerts available
-
-                                </td>
-
-                            </tr>
-
-                            {% endfor %}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ==========================================
-             SYSTEM INFORMATION
-        =========================================== -->
-
-        <section class="system-info">
-
-            <div class="info-box">
-
-                <i class="fa-solid fa-shield-halved"></i>
-
-                <div>
-
-                    <h3>Protection Status</h3>
-
-                    <p>
-                        Ransomware detection and file monitoring
-                        system is running.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="info-box">
-
-                <i class="fa-solid fa-eye"></i>
-
-                <div>
-
-                    <h3>Real-Time Monitoring</h3>
-
-                    <p>
-                        The monitored folder is being watched
-                        for suspicious file activity.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-    </main>
+</main>
+```
 
 </div>
-
-
 
 <!-- ==========================================
      CHART DATA
@@ -623,6 +672,7 @@
 
             },
 
+
             options: {
 
                 responsive: true,
@@ -638,6 +688,7 @@
                     }
 
                 },
+
 
                 scales: {
 
@@ -662,7 +713,6 @@
     }
 
 </script>
-
 
 </body>
 </html>

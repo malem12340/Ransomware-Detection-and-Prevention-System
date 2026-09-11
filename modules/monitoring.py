@@ -41,109 +41,151 @@ class MonitorHandler(FileSystemEventHandler):
             return
 
         # ---------------------------------------
-        # Save Event to Database
+        # Connect to Database
         # ---------------------------------------
 
         db = Database()
 
-        query = """
-        INSERT INTO file_events
-        (event_type, file_path, status)
-        VALUES (%s, %s, %s)
-        """
+        try:
 
-        values = (
-            event_type,
-            path,
-            "Detected"
-        )
+            # ---------------------------------------
+            # Get Next File Event ID
+            # ---------------------------------------
 
-        db.execute(query, values)
+            db.execute("""
+                SELECT COALESCE(MAX(id), 0) + 1 AS next_id
+                FROM file_events
+            """)
 
-        # ---------------------------------------
-        # Suspicious Extension Detection
-        # ---------------------------------------
+            result = db.fetchone()
 
-        if extension_detector.is_suspicious(path):
+            next_id = result["next_id"] if result else 1
 
-            print("⚠ Suspicious Extension Detected")
+            db.cursor.fetchall()
 
-            system.set_status("CRITICAL")
 
-            description = (
-                f"Encrypted file detected: "
-                f"{os.path.basename(path)}"
+            # ---------------------------------------
+            # Save Event to Database
+            # ---------------------------------------
+
+            query = """
+            INSERT INTO file_events
+            (id, event_type, file_path, event_time, status)
+            VALUES (%s, %s, %s, NOW(), %s)
+            """
+
+            values = (
+                next_id,
+                event_type,
+                path,
+                "Detected"
             )
 
-            # Save alert
-            alert.create_alert(
-                "Suspicious Extension",
-                description,
-                "Critical"
-            )
+            db.execute(query, values)
 
-            # Save log
-            logger.save_log(
-                "SYSTEM",
-                "Suspicious extension detected"
-            )
 
-            # Send email
-            email_alert.send_alert(
-                "Suspicious Extension",
-                description,
-                "Critical"
-            )
+            # ---------------------------------------
+            # Suspicious Extension Detection
+            # ---------------------------------------
 
-        # ---------------------------------------
-        # Rapid Change Detection
-        # ---------------------------------------
+            if extension_detector.is_suspicious(path):
 
-        if detector.check():
-
-            if system.can_trigger():
-
-                print("⚠ RANSOMWARE SUSPECTED")
+                print("⚠ Suspicious Extension Detected")
 
                 system.set_status("CRITICAL")
 
                 description = (
-                    "Multiple files changed within a short "
-                    "period. Possible ransomware activity detected."
+                    f"Encrypted file detected: "
+                    f"{os.path.basename(path)}"
                 )
+
 
                 # Save alert
                 alert.create_alert(
-                    "Rapid File Modification",
+                    "Suspicious Extension",
                     description,
                     "Critical"
                 )
+
 
                 # Save log
                 logger.save_log(
                     "SYSTEM",
-                    "Possible ransomware detected"
+                    "Suspicious extension detected"
                 )
+
 
                 # Send email
                 email_alert.send_alert(
-                    "Rapid File Modification",
+                    "Suspicious Extension",
                     description,
                     "Critical"
                 )
 
-                # Create backup
-                backup.backup_all_files(
-                    "monitored_folder"
-                )
 
-        # ---------------------------------------
-        # Close Database
-        # ---------------------------------------
+            # ---------------------------------------
+            # Rapid Change Detection
+            # ---------------------------------------
 
-        db.close()
+            if detector.check():
+
+                if system.can_trigger():
+
+                    print("⚠ RANSOMWARE SUSPECTED")
+
+                    system.set_status("CRITICAL")
+
+                    description = (
+                        "Multiple files changed within a short "
+                        "period. Possible ransomware activity detected."
+                    )
+
+
+                    # Save alert
+                    alert.create_alert(
+                        "Rapid File Modification",
+                        description,
+                        "Critical"
+                    )
+
+
+                    # Save log
+                    logger.save_log(
+                        "SYSTEM",
+                        "Possible ransomware detected"
+                    )
+
+
+                    # Send email
+                    email_alert.send_alert(
+                        "Rapid File Modification",
+                        description,
+                        "Critical"
+                    )
+
+
+                    # Create backup
+                    backup.backup_all_files(
+                        "monitored_folder"
+                    )
+
+
+        except Exception as e:
+
+            print("Database Error:", e)
+
+
+        finally:
+
+            # ---------------------------------------
+            # Close Database
+            # ---------------------------------------
+
+            db.close()
+
 
         print(event_type, path)
+
 
     # ---------------------------------------
     # File Created
@@ -158,6 +200,7 @@ class MonitorHandler(FileSystemEventHandler):
                 event.src_path
             )
 
+
     # ---------------------------------------
     # File Modified
     # ---------------------------------------
@@ -171,6 +214,7 @@ class MonitorHandler(FileSystemEventHandler):
                 event.src_path
             )
 
+
     # ---------------------------------------
     # File Deleted
     # ---------------------------------------
@@ -183,6 +227,7 @@ class MonitorHandler(FileSystemEventHandler):
                 "Deleted",
                 event.src_path
             )
+
 
     # ---------------------------------------
     # File Renamed

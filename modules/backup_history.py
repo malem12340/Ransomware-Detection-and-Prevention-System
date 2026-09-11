@@ -7,17 +7,28 @@ class BackupHistory:
 
         db = Database()
 
-        query = """
-        SELECT *
-        FROM backup_history
-        ORDER BY backup_time DESC
-        LIMIT 10
-        """
+        try:
 
-        db.execute(query)
+            query = """
+            SELECT *
+            FROM backup_history
+            ORDER BY backup_time DESC
+            LIMIT 10
+            """
 
-        data = db.fetchall()
+            db.execute(query)
 
-        db.close()
+            data = db.fetchall()
 
-        return data
+            return data
+
+        except Exception as e:
+
+            print("Backup history error:", e)
+
+            return []
+
+        finally:
+
+            db.close()
+

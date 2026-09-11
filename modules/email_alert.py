@@ -1,30 +1,45 @@
 import smtplib
 import time
+import os
+
 from email.message import EmailMessage
+from dotenv import load_dotenv
+
+
+# Load .env file
+load_dotenv()
 
 
 class EmailAlert:
 
     def __init__(self):
 
-        # Sender Gmail address
-        self.sender_email = "YOUR_GMAIL@gmail.com"
+        # ---------------------------------------
+        # Gmail Configuration
+        # ---------------------------------------
 
-        # Google App Password
-        self.app_password = "16_DIGIT_APP_PASSWORD"
+        self.sender_email = os.getenv("EMAIL_SENDER")
+        self.app_password = os.getenv("EMAIL_APP_PASSWORD")
+        self.receiver_email = os.getenv("EMAIL_RECEIVER")
 
-        # Email where you want to receive alerts
-        self.receiver_email = "YOUR_GMAIL@gmail.com"
-         # Email cooldown in seconds
+        # ---------------------------------------
+        # Email Cooldown
+        # ---------------------------------------
+
         self.cooldown_seconds = 60
 
         # Store last email time for each alert type
         self.last_sent = {}
 
+
     def send_alert(self, alert_type, description, severity):
+
         current_time = time.time()
 
-        # Check cooldown
+        # ---------------------------------------
+        # Check Cooldown
+        # ---------------------------------------
+
         last_time = self.last_sent.get(alert_type, 0)
 
         if current_time - last_time < self.cooldown_seconds:
@@ -36,11 +51,37 @@ class EmailAlert:
 
             return
 
+
+        # ---------------------------------------
+        # Check Email Configuration
+        # ---------------------------------------
+
+        if not self.sender_email:
+            print("❌ EMAIL_SENDER is not configured")
+            return
+
+        if not self.app_password:
+            print("❌ EMAIL_APP_PASSWORD is not configured")
+            return
+
+        if not self.receiver_email:
+            print("❌ EMAIL_RECEIVER is not configured")
+            return
+
+
+        # ---------------------------------------
+        # Create Email
+        # ---------------------------------------
+
         message = EmailMessage()
 
-        message["Subject"] = f"🚨 RDPS Security Alert - {severity}"
+        message["Subject"] = (
+            f"RDPS Security Alert - {severity}"
+        )
+
         message["From"] = self.sender_email
         message["To"] = self.receiver_email
+
 
         body = f"""
 RANSOMWARE DETECTION AND PREVENTION SYSTEM
@@ -61,9 +102,17 @@ This is an automated security notification.
 
         message.set_content(body)
 
+
+        # ---------------------------------------
+        # Send Email
+        # ---------------------------------------
+
         try:
 
-            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            with smtplib.SMTP_SSL(
+                "smtp.gmail.com",
+                465
+            ) as server:
 
                 server.login(
                     self.sender_email,
@@ -71,11 +120,14 @@ This is an automated security notification.
                 )
 
                 server.send_message(message)
-                # Save time only after successful email
+
+
+            # Save time only after successful email
             self.last_sent[alert_type] = current_time
 
             print("📧 Email alert sent successfully")
 
+
         except Exception as e:
 
-            print(" Email sending failed:", e)
+            print("❌ Email sending failed:", e)
